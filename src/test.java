@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class TTT extends Application {
+public class test extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -32,7 +32,7 @@ public class TTT extends Application {
         //draw the board
         Color white = Color.WHITE;
 
-        Rectangle[] board = new Rectangle[]{};
+        Rectangle[] board = new Rectangle[9];
         double width = (canvas.getWidth() / 3);
         double height = (canvas.getHeight() / 3);
 
@@ -77,8 +77,8 @@ public class TTT extends Application {
         gc.setLineWidth(2);
         Font theFont = Font.font("Arial", FontWeight.BOLD, 48);
         gc.setFont(theFont);
-        gc.fillText("Hello, World!", 60,50);
-        gc.strokeText("Hello, World!", 60,50);
+        gc.fillText("Test Board", 200,100);
+
 
 
         theScene.setOnMouseClicked(
@@ -86,7 +86,6 @@ public class TTT extends Application {
                     for (Rectangle x : board) {
                         if (x.contains(e.getX(), e.getY()) && x.getFill() == Color.WHITE) {
                             x.setFill(Color.RED);
-                            root.getChildren().add(new Circle ((x.getX() + 100), (x.getY()) + 100, 20));
 
 
                         } else if(x.contains(e.getX(), e.getY()) && x.getFill() == Color.RED) {
