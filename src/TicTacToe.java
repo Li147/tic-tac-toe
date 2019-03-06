@@ -66,9 +66,11 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
 
 
 
-    public boolean hasWon(char player){
+    public boolean hasWon(int x){
         for (int i = 0; i < 3 ; i++){
-            if(board[i][0].state =
+            if(board[i][0].state == x &&){
+                return true
+            }
         }
     }
 
@@ -167,7 +169,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
 
     private class Tile extends StackPane {
         Text text = new Text();
-        int state = 0;
+        int state;
         int position;
 
         public Tile(){
