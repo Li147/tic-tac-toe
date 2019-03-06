@@ -1,66 +1,85 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.util.ArrayList;
 
 public class TicTacToe extends Application implements EventHandler<ActionEvent> {
 
     Stage primaryStage;
-    Pane root = new Pane();
-    //ArrayList<Tile> board = new ArrayList<>();
-    Tile[] board = new Tile[9];
+    GridPane root = new GridPane();
 
-    private Parent createParent(){
-
-        root.setPrefSize(610,610);
-
-        int pos = 0;
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
-                Tile tile = new Tile();
-                tile.setTranslateX(j * 200);
-                tile.setTranslateY(i * 200);
-                root.getChildren().add(tile);
-                tile.setPosition(pos);
-                board[pos] = tile;
-                pos++;
-            }
-        }
-       return root;
-    }
-
-
+    private char currentPlayer = 'X';
+    private Tile[][] board = new Tile[3][3];
+    private Label message = new Label("Hello World");
 
     @Override
     public void start(Stage primaryStage) {
 
-        primaryStage.setTitle("ttt");
+        Scene scene = new Scene(createBoard(), 450, 300);
 
-        Scene scene = new Scene(createParent());
+        primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(scene);
-
         primaryStage.show();
 
     }
+
+    private Parent createBoard(){
+
+        int pos = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                board[i][j] = new Tile();
+                root.add(board[i][j], j, i);
+            }
+        }
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(root);
+        borderPane.setBottom(message);
+
+        return borderPane;
+    }
+
+    public boolean isBoardFull(){
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if (board[i][j].state == ' '){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+
+    public boolean hasWon(char player){
+        for (int i = 0; i < 3 ; i++){
+            if(board[i][0].state =
+        }
+    }
+
+    public char getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(char currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
 
     public static void main(String[] args) {
         launch(args);
@@ -97,9 +116,9 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
 
 
     // check winner
-    public int checkWinner(){
+    public int checkWinner(Tile board){
         if (checkRowWinner() != 0){
-            return checkRowWinner();
+            return checkRowWinner(board);
         } else if(checkColumnWinner() != 0){
             return checkColumnWinner();
         } else if (checkDiagonalWinner() != 0){
@@ -109,7 +128,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
     }
 
     // check rows for winner
-    private int checkRowWinner() {
+    private int checkRowWinner(Tile board) {
         for (int i = 0; i < 7; i += 3) {
             if (board[i].getState() + board[i + 1].getState() + board[i + 2].getState() == 3) {
                 return 1;
@@ -121,7 +140,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
     }
 
     // check columns for winner
-    private int checkColumnWinner(){
+    private int checkColumnWinner(Tile board){
         for (int i = 0; i < 3; i++) {
             if (board[i].getState() + board[i + 3].getState() + board[i + 6].getState() == 3) {
                 return 1;
@@ -133,7 +152,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
     }
 
     // check columns for winner
-    private int checkDiagonalWinner(){
+    private int checkDiagonalWinner(Tile board){
         if(board[0].getState() + board[4].getState() + board[8].getState() == 3 ||
                 board[2].getState() + board[4].getState() + board[6].getState() == 3){
             return 1;
@@ -165,6 +184,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
                     text.setText("X");
                     //text.setText(Integer.toString(this.getPosition()));
                     this.state = 1;
+                    board.checkW
 
 
                 } else if (e.getButton() == MouseButton.SECONDARY){
