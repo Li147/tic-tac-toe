@@ -58,7 +58,7 @@ public class TicTacToe extends Application {
     public boolean isBoardFull(){
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                if (board[i][j].getPlayer() == 1 || board[i][j].getPlayer() == 5){
+                if (board[i][j].getPlayer() == 0){
                     return false;
                 }
             }
@@ -122,21 +122,32 @@ public class TicTacToe extends Application {
         }
 
         public void handleClick(){
+
+            if (player != 0 && isBoardFull()){
+                message.setText("It's a draw!");
+                currentPlayer = 0;
+            }
+
             if (player == 0 && currentPlayer != 0){
                 setPlayer(currentPlayer);
 
                 if (hasWon(1)){
-                    message.setText("Team X has won!");
+                    message.setText("Team Blue has won!");
                     currentPlayer = 0;
                 } else if (hasWon(5)){
-                    message.setText("Team O has won!");
+                    message.setText("Team Red has won!");
                     currentPlayer = 0;
                 } else if (isBoardFull()){
                     message.setText("It's a draw!");
                     currentPlayer = 0;
                 } else {
                     currentPlayer = (currentPlayer == 1) ? 5 : 1;
-                    message.setText(Integer.toString(currentPlayer) + " must play.");
+
+                    if(currentPlayer == 1){
+                        message.setText("Blue must play.");
+                    } else {
+                        message.setText("Red must play.");
+                    }
                 }
 
             }
