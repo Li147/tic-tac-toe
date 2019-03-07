@@ -10,20 +10,22 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.w3c.dom.css.Rect;
 
-public class TicTacToe extends Application implements EventHandler<ActionEvent> {
+public class TicTacToe extends Application {
 
     Stage primaryStage;
     GridPane root = new GridPane();
 
-    private char currentPlayer = 'X';
+    private int currentPlayer = 5;
     private Tile[][] board = new Tile[3][3];
-    private Label message = new Label("Hello World");
+    private Label message = new Label("Welcome to Tic Tac Toe, click in a box to start.");
 
     @Override
     public void start(Stage primaryStage) {
@@ -56,7 +58,7 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
     public boolean isBoardFull(){
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                if (board[i][j].state == ' '){
+                if (board[i][j].getPlayer() == 1 || board[i][j].getPlayer() == 5){
                     return false;
                 }
             }
@@ -67,14 +69,34 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
 
 
     public boolean hasWon(int x){
+        // checking rows
         for (int i = 0; i < 3 ; i++){
-            if(board[i][0].state == x &&){
-                return true
+            if(board[i][0].getPlayer() == x && board[i][1].getPlayer() == x && board[i][2].getPlayer() == x){
+                return true;
             }
         }
+
+        // checking columns
+        for (int i = 0; i < 3 ; i++){
+            if(board[0][i].getPlayer() == x && board[1][i].getPlayer() == x && board[2][i].getPlayer() == x){
+                return true;
+            }
+        }
+
+        // checking diagonal
+        if (board[0][0].getPlayer() == x && board[1][1].getPlayer() == x && board[2][2].getPlayer() == x){
+            return true;
+        }
+
+        // checking diagonal 2
+        if (board[0][2].getPlayer() == x && board[1][1].getPlayer() == x && board[2][0].getPlayer() == x){
+            return true;
+        }
+
+        return false;
     }
 
-    public char getCurrentPlayer() {
+    public int getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -87,132 +109,69 @@ public class TicTacToe extends Application implements EventHandler<ActionEvent> 
         launch(args);
     }
 
-    @Override
-    public void handle(ActionEvent event){
-//        if(event.getSource() == Tile){
-//
-//
-//        }
-        if (this.checkWinner() == 1){
-            Canvas canvas = new Canvas(500,500);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.setFill(Color.BLUE);
-            gc.setStroke(Color.BLACK);
-            gc.setLineWidth(2);
-            Font theFont = Font.font("Arial", FontWeight.BOLD, 48);
-            gc.setFont(theFont);
-            gc.fillText("Hello, World!", 60,50);
-            gc.strokeText("Hello, World!", 60,50);
 
 
+    public class Tile extends Pane {
+        private int player = 0;
 
-            root.getChildren().add(canvas);
-            Scene newScene = new Scene(root);
-            primaryStage.setScene(newScene);
-            primaryStage.show();
+        public Tile() {
 
+            setStyle("-fx-border-color : black");
+            this.setPrefSize(300, 300);
+            this.setOnMouseClicked(e -> handleClick());
         }
-    }
 
+        public void handleClick(){
+            if (player == 0 && currentPlayer != 0){
+                setPlayer(currentPlayer);
 
-
-
-    // check winner
-    public int checkWinner(Tile board){
-        if (checkRowWinner() != 0){
-            return checkRowWinner(board);
-        } else if(checkColumnWinner() != 0){
-            return checkColumnWinner();
-        } else if (checkDiagonalWinner() != 0){
-            return checkDiagonalWinner();
-        }
-        return 0;
-    }
-
-    // check rows for winner
-    private int checkRowWinner(Tile board) {
-        for (int i = 0; i < 7; i += 3) {
-            if (board[i].getState() + board[i + 1].getState() + board[i + 2].getState() == 3) {
-                return 1;
-            } else if (board[i].getState() + board[i + 1].getState() + board[i + 2].getState() == 15) {
-                return 5;
-            }
-        }
-        return 0;
-    }
-
-    // check columns for winner
-    private int checkColumnWinner(Tile board){
-        for (int i = 0; i < 3; i++) {
-            if (board[i].getState() + board[i + 3].getState() + board[i + 6].getState() == 3) {
-                return 1;
-            } else if (board[i].getState() + board[i + 3].getState() + board[i + 6].getState() == 15) {
-                return 5;
-            }
-        }
-        return 0;
-    }
-
-    // check columns for winner
-    private int checkDiagonalWinner(Tile board){
-        if(board[0].getState() + board[4].getState() + board[8].getState() == 3 ||
-                board[2].getState() + board[4].getState() + board[6].getState() == 3){
-            return 1;
-        } else if (board[0].getState() + board[4].getState() + board[8].getState() == 15 ||
-                board[2].getState() + board[4].getState() + board[6].getState() == 15){
-            return 5;
-        }
-        return 0;
-    }
-
-
-
-    private class Tile extends StackPane {
-        Text text = new Text();
-        int state;
-        int position;
-
-        public Tile(){
-            Rectangle r = new Rectangle(200,200, Color.WHITE);
-            r.setStroke(Color.BLACK);
-            r.setStrokeWidth(6);
-
-            setAlignment(Pos.CENTER);
-
-            text.setFont(Font.font(60));
-
-            setOnMouseClicked(e ->{
-                if (e.getButton() == MouseButton.PRIMARY){
-                    text.setText("X");
-                    //text.setText(Integer.toString(this.getPosition()));
-                    this.state = 1;
-                    board.checkW
-
-
-                } else if (e.getButton() == MouseButton.SECONDARY){
-                    text.setText("O");
-                    this.state = 5;
+                if (hasWon(1)){
+                    message.setText("Team X has won!");
+                    currentPlayer = 0;
+                } else if (hasWon(5)){
+                    message.setText("Team O has won!");
+                    currentPlayer = 0;
+                } else if (isBoardFull()){
+                    message.setText("It's a draw!");
+                    currentPlayer = 0;
+                } else {
+                    currentPlayer = (currentPlayer == 1) ? 5 : 1;
+                    message.setText(Integer.toString(currentPlayer) + " must play.");
                 }
-            });
 
-            getChildren().addAll(r, text);
+            }
+
+
         }
 
-        public void setPosition(int i){
-            this.position = i;
+
+        public int getPlayer(){
+            return player;
         }
 
-        public int getPosition(){
-            return this.position;
+        public void setPlayer(int x){
+            player = x;
+
+            if(player == 1){
+
+                Ellipse blue = new Ellipse(this.getWidth()/2, this.getHeight()/2,
+                        30,30);
+                blue.setFill(Color.BLUE);
+
+                getChildren().add(blue);
+            }
+
+            if(player == 5){
+                Ellipse ellipse = new Ellipse(this.getWidth()/2, this.getHeight()/2,
+                        30,30);
+                ellipse.setFill(Color.RED);
+
+                getChildren().add(ellipse);
+            }
+
+
         }
 
-        public void setState(int s){
-            this.state = s;
-        }
-
-        public int getState(){
-            return this.state;
-        }
 
 
     }
